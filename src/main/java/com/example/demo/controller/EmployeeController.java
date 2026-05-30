@@ -60,7 +60,7 @@ public class EmployeeController {
 	
 	@GetMapping("/designation/{desigId}")
 	public ResponseEntity<List<Employee>> getAllEmployeesByDesignation(@PathVariable Long desigId) {
-		List<Employee> employeeList = empserv.getAllEmployeesByDepartment(desigId);
+		List<Employee> employeeList = empserv.getAllEmployeesByDesignation(desigId);
 		return ResponseEntity.status(HttpStatus.OK).body(employeeList);
 	}
 }
