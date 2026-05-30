@@ -9,7 +9,7 @@ public interface IDepartmentService {
 	
 	public void createDepartment(Department department);
 	
-	public Department getDepartmentById(Long dept_id);
+	public DepartmentDto getDepartmentById(Long dept_id);
 	
 	public void updateDepartment(Department department);
 	

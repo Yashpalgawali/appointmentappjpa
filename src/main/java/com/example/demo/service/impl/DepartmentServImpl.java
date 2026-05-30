@@ -44,10 +44,13 @@ public class DepartmentServImpl implements IDepartmentService {
 	}
 
 	@Override
-	public Department getDepartmentById(Long dept_id) {
+	public DepartmentDto getDepartmentById(Long dept_id) {
 
-		return deptrepo.findById(dept_id)
+		Department dept = deptrepo.findById(dept_id)
 				.orElseThrow(() -> new ResourceNotExistsException("No Department found for given ID " + dept_id));
+		
+		DepartmentDto deptDto = DepartmentMapper.mapToDepartmentDto(dept, new DepartmentDto());
+		return deptDto;
 	}
 
 	@Override
