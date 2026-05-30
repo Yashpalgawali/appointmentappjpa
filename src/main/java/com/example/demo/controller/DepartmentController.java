@@ -30,15 +30,15 @@ public class DepartmentController {
 	@PostMapping("/")
 	public ResponseEntity<ResponseDto> createDepartment(@Valid @RequestBody Department department) {
 		deptserv.createDepartment(department);
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-				new ResponseDto(department.getDepartmentName() + " is created successfully", HttpStatus.CREATED.toString()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(
+				department.getDepartmentName() + " is created successfully", HttpStatus.CREATED.toString()));
 	}
 
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updateDepartment(@Valid @RequestBody Department department) {
 		deptserv.updateDepartment(department);
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-				new ResponseDto(department.getDepartmentName() + " is updated successfully", HttpStatus.CREATED.toString()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(
+				department.getDepartmentName() + " is updated successfully", HttpStatus.CREATED.toString()));
 	}
 
 	@GetMapping("/{id}")

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.dto.DepartmentDto;
 import com.example.demo.entities.Company;
@@ -54,11 +55,11 @@ public class DepartmentServImpl implements IDepartmentService {
 	}
 
 	@Override
+	@Transactional
 	public void updateDepartment(Department department) {
 		String trimmedDeptName = department.getDepartmentName().trim();
-		Department deptObj = deptrepo.findById(department.getDepartmentId())
-				.orElseThrow(() -> new ResourceNotExistsException(
-						"Department is not found for given ID " + department.getDepartmentId()));
+		
+		this.getDepartmentById(department.getDepartmentId());
 
 		int result = deptrepo.updateDepartment(department.getDepartmentId(), trimmedDeptName,
 				department.getCompany().getCompanyId());
@@ -71,12 +72,17 @@ public class DepartmentServImpl implements IDepartmentService {
 	@Override
 	public List<DepartmentDto> getAllDepartments() {
 		List<Department> deptList = deptrepo.findAll();
-		List<DepartmentDto> deptDtoList = deptList.stream().map((dept) -> {
+		if(deptList.size() > 0)
+		{
+			List<DepartmentDto> deptDtoList = deptList.stream().map((dept) -> {		
 
-			DepartmentDto deptDto = DepartmentMapper.mapToDepartmentDto(dept, new DepartmentDto());
-			return deptDto;
-		}).collect(Collectors.toList());
-		return deptDtoList;
+				DepartmentDto deptDto = DepartmentMapper.mapToDepartmentDto(dept, new DepartmentDto());
+				return deptDto;
+				}).collect(Collectors.toList());
+			return deptDtoList;
+		}
+		throw new ResourceNotExistsException("No Department(s) found");
+		
 	}
 
 	@Override

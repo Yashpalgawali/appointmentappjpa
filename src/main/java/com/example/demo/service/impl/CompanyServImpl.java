@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,9 +25,10 @@ public class CompanyServImpl implements ICompanyService {
 	@Override
 	public void createCompany(Company company) {
 
-		Consumer<? super Company> action = (c) -> new ResourceAlreadyExistsException(
-				"Company " + company.getCompanyName() + " is already present");
-		comprepo.findByCompanyName(company.getCompanyName()).ifPresent(action);
+		Optional<Company> byCompanyName = comprepo.findByCompanyName(company.getCompanyName());
+		if (byCompanyName.isPresent()) {
+			throw new ResourceAlreadyExistsException("Company " + company.getCompanyName() + " is already exists");
+		}
 
 		Company savedCompany = comprepo.save(company);
 		if (savedCompany == null) {

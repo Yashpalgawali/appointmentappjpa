@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entities.Designation;
 import com.example.demo.exceptions.GlobalException;
@@ -54,6 +55,7 @@ public class DesignationServImpl implements IDesignationService {
 	}
 
 	@Override
+	@Transactional
 	public void updateDesignation(Designation designation) {
 
 		this.getDesignationById(designation.getDesignationId());

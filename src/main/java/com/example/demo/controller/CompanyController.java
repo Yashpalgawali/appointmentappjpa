@@ -36,8 +36,8 @@ public class CompanyController {
 	@PutMapping("/")
 	public ResponseEntity<ResponseDto> updateCompany(@Valid @RequestBody Company company) {
 		compserv.updateCompany(company);
-		return ResponseEntity.status(HttpStatus.CREATED).body(
-				new ResponseDto(company.getCompanyName() + " is updated successfully", HttpStatus.CREATED.toString()));
+		return ResponseEntity.status(HttpStatus.OK).body(
+				new ResponseDto(company.getCompanyName() + " is updated successfully", HttpStatus.OK.toString()));
 	}
 
 	@GetMapping("/{id}")
