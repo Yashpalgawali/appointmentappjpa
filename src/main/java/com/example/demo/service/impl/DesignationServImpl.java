@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,10 +26,11 @@ public class DesignationServImpl implements IDesignationService {
 	public void createDesignation(Designation designation) {
 
 		String trimmedDesigName = designation.getDesignationName().trim();
-
-		Consumer<? super Designation> action = d -> new ResourceAlreadyExistsException(
-				"Designation " + trimmedDesigName + " is already present");
-		desigrepo.findByDesignationName(trimmedDesigName).ifPresent(action);
+		 
+		Optional<Designation> foundDesignation =	desigrepo.findByDesignationName(trimmedDesigName);
+		if(foundDesignation.isPresent()) {
+			throw new ResourceAlreadyExistsException("Designation "+trimmedDesigName+" already exists");
+		}
 
 		designation.setDesignationName(trimmedDesigName);
 		Designation savedDesig = desigrepo.save(designation);
@@ -42,7 +43,7 @@ public class DesignationServImpl implements IDesignationService {
 	public Designation getDesignationById(Long id) {
 		// TODO Auto-generated method stub
 		return desigrepo.findById(id)
-				.orElseThrow(() -> new ResourceNotExistsException("No Designation foudn for given ID " + id));
+				.orElseThrow(() -> new ResourceNotExistsException("No Designation found for given ID " + id));
 	}
 
 	@Override
@@ -59,11 +60,13 @@ public class DesignationServImpl implements IDesignationService {
 	public void updateDesignation(Designation designation) {
 
 		this.getDesignationById(designation.getDesignationId());
-
-		int result = desigrepo.updateDesignation(designation.getDesignationId(), designation.getDesignationName());
+		
+		String trimmedDesigName = designation.getDesignationName().trim();
+		 
+		int result = desigrepo.updateDesignation(designation.getDesignationId(), trimmedDesigName);
 		if (result < 0) {
 			throw new ResourceNotModifiedException(
-					"Designation " + designation.getDesignationName() + " is not updated");
+					"Designation " + trimmedDesigName + " is not updated");
 		}
 
 	}

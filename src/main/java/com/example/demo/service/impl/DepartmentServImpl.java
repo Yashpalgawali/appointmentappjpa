@@ -38,6 +38,8 @@ public class DepartmentServImpl implements IDepartmentService {
 			throw new ResourceAlreadyExistsException("Department " + trimmedDeptName + " is already present");
 		}
 
+		Company company =compserv.getCompanyById(department.getCompany().getCompanyId());
+		department.setCompany(company);
 		Department dept = deptrepo.save(department);
 		if (dept == null) {
 			throw new GlobalException("Department " + trimmedDeptName + " is not saved");
@@ -60,7 +62,9 @@ public class DepartmentServImpl implements IDepartmentService {
 		String trimmedDeptName = department.getDepartmentName().trim();
 		
 		this.getDepartmentById(department.getDepartmentId());
-
+		
+		compserv.getCompanyById(department.getCompany().getCompanyId());
+		
 		int result = deptrepo.updateDepartment(department.getDepartmentId(), trimmedDeptName,
 				department.getCompany().getCompanyId());
 		if (result < 0) {
