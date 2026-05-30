@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.example.demo.entities.Company;
 
-public interface CompanyService {
+public interface ICompanyService {
 
 	public void createCompany(Company company);
 

@@ -1,42 +1,65 @@
 package com.example.demo.service.impl;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entities.Company;
+import com.example.demo.exceptions.GlobalException;
+import com.example.demo.exceptions.ResourceAlreadyExistsException;
+import com.example.demo.exceptions.ResourceNotExistsException;
+import com.example.demo.exceptions.ResourceNotModifiedException;
 import com.example.demo.repository.CompanyRepository;
-import com.example.demo.service.CompanyService;
+import com.example.demo.service.ICompanyService;
 
 import lombok.RequiredArgsConstructor;
 
 @Service("compserv")
 @RequiredArgsConstructor
-public class CompanyServImpl implements CompanyService {
+public class CompanyServImpl implements ICompanyService {
 
 	private final CompanyRepository comprepo;
 
 	@Override
 	public void createCompany(Company company) {
-		comprepo.save(company);
 
+		Consumer<? super Company> action = (c) -> new ResourceAlreadyExistsException(
+				"Company " + company.getCompanyName() + " is already present");
+		comprepo.findByCompanyName(company.getCompanyName()).ifPresent(action);
+
+		Company savedCompany = comprepo.save(company);
+		if (savedCompany == null) {
+			throw new GlobalException("Company " + company.getCompanyName() + " is not saved");
+		}
 	}
 
 	@Override
 	public Company getCompanyById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+
+		return comprepo.findById(id)
+				.orElseThrow(() -> new ResourceNotExistsException("Company is found for given ID " + id));
 	}
 
 	@Override
 	public List<Company> getAllCompanies() {
-		// TODO Auto-generated method stub
-		return null;
+		var compList = comprepo.findAll();
+		if (compList.size() > 0)
+			return compList;
+		throw new ResourceNotExistsException("No Companies found");
 	}
 
 	@Override
+	@Transactional
 	public void updateCompany(Company company) {
-		// TODO Auto-generated method stub
+		comprepo.findById(company.getCompanyId())
+				.orElseThrow(() -> new ResourceNotExistsException("No Company found " + company.getCompanyName()));
+
+		int result = comprepo.updateCompany(company.getCompanyId(), company.getCompanyName());
+		if (result < 0) {
+			throw new ResourceNotModifiedException("Company " + company.getCompanyName() + " is not updated");
+		}
 
 	}
 

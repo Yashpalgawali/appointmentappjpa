@@ -17,20 +17,20 @@ import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "tbl_company")
+@Table(name = "tbl_designation")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Validated
-public class Company {
+public class Designation {
 
 	@Id
-	@SequenceGenerator(name = "company_seq", allocationSize = 1, initialValue = 1)
-	@GeneratedValue(generator = "company_seq", strategy = GenerationType.IDENTITY)
-	Long companyId;
+	@SequenceGenerator(name = "designation_seq", allocationSize = 1, initialValue = 1)
+	@GeneratedValue(generator = "designation_seq", strategy = GenerationType.IDENTITY)
+	Long designationId;
 
-	@Size(min = 2, max = 20, message = "Company name must have at least two characters")
-	String companyName;
+	@Size(min = 2, max = 20, message = "Designation name must have at least two characters")
+	String designationName;
 }
